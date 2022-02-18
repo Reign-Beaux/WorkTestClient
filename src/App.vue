@@ -1,14 +1,18 @@
 <template>
-  <Person />
+    <div id="app">
+        <router-view v-slot="{ Component }">
+          <transition>
+            <keep-alive>
+              <component :is="Component" />
+            </keep-alive>
+          </transition>
+        </router-view>
+    </div>
 </template>
 
 <script>
-import Person from './components/persons/Index.vue'
 export default {
-  name: 'App',
-  components: {
-    Person
-  }
+  name: 'App'
 }
 </script>
 <style>
