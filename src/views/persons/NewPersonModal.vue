@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 export default {
     name: `NewPersonModal`,
     props: {
@@ -56,22 +58,25 @@ export default {
     },
     data() {
         return {
-            person: {}
+            person: {
+                Nombre: null,
+                Edad: null,
+                FechaNacimiento: null
+            }
         }
     },
     methods: {
         close () {
             this.$emit(`close`)
         },
-        setDefault () {
-            this.person = {
-                Nombre: "",
-                Edad: null,
-                FechaNacimiento: null
-            }
+        getDefault () {
+            this.person.Nombre = null
+            this.person.Edad = null
+            this.person.FechaNacimiento = null
         },
-        setPerson () {
-            console.log("setperson")
+        async getPerson () {
+            let res = await axios.get(`https://localhost:7078/api/persons/${this.person_id}`)
+            console.log(res.data)
         },
         savePerson () {
             console.log("Holi<<<")
@@ -81,7 +86,7 @@ export default {
         show () {
             if (!this.show) return
 
-            if (this.person_id === null) this.setDefault()
+            if (this.person_id === null) this.getDefault()
             else this.getPerson()
         }
     }

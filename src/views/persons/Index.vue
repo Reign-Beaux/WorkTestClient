@@ -8,11 +8,12 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-end row p-1">
                             <button class="btn-primary btn-sm btn-index"
-                                @click="newPerson">
+                                @click="createPerson">
                                 <i class="fa-solid fa-plus"></i>
                                 Crear
                             </button>
-                            <button class="btn-warning btn-sm btn-index">
+                            <button class="btn-warning btn-sm btn-index"
+                                @click="updatePerson">
                                 <i class="fa-solid fa-pencil"></i>
                                 Editar
                             </button>
@@ -49,7 +50,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="person in persons" :key="person.Id"
-                                        @click="setCurrentRow(person)">
+                                        @click="setCurrentId(person.Id)">
                                         <td>{{person.Nombre}}</td>
                                         <td>{{person.Edad}}</td>
                                         <td>{{person.FechaNacimiento}}</td>
@@ -79,7 +80,7 @@ export default {
             showPersonModal: false,
             title: "",
             persons: [],
-            currentRow: {},
+            currentId: null,
             filters: {
                 Nombre_cont: ""
             },
@@ -110,13 +111,18 @@ export default {
                 }
             ]
         },
-        setCurrentRow(row) {
-            this.currentRow = row
+        setCurrentId(id) {
+            this.currentId = id
         },
-        newPerson () {
+        createPerson () {
             this.person_id = null
             this.showPersonModal = true
             this.title = "Crear Nueva Persona"
+        },
+        updatePerson () {
+            this.person_id = this.currentId
+            this.showPersonModal = true
+            this.title = "Crear Nueva Persona"            
         }
     },
     mounted () {
