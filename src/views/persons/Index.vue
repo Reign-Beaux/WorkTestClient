@@ -17,7 +17,8 @@
                                 <i class="fa-solid fa-pencil"></i>
                                 Editar
                             </button>
-                            <button class="btn-danger btn-sm btn-index">
+                            <button class="btn-danger btn-sm btn-index"
+                                @click="deletePerson">
                                 <i class="fa-solid fa-trash-can"></i>
                                 Eliminar
                             </button>
@@ -50,10 +51,10 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="person in persons" :key="person.Id"
-                                        @click="setCurrentId(person.Id)">
-                                        <td>{{person.Nombre}}</td>
-                                        <td>{{person.Edad}}</td>
-                                        <td>{{person.FechaNacimiento}}</td>
+                                        @click="setCurrentId(person.id)">
+                                        <td>{{person.nombre}}</td>
+                                        <td>{{person.edad}}</td>
+                                        <td>{{person.fechaNacimiento}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -65,18 +66,20 @@
         <NewPersonModal
             :show="showPersonModal"
             :title="title"
-            :person_id="person_id"
+            :personId="personId"
             @close="showPersonModal = false" />
     </div>
 </template>
 <script>
+import axios from 'axios'
 import NewPersonModal from './NewPersonModal.vue'
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 export default {
     name: 'indexPerson',
     data()
     {
         return {
-            person_id: null,
+            personId: null,
             showPersonModal: false,
             title: "",
             persons: [],
@@ -95,34 +98,40 @@ export default {
         NewPersonModal
     },
     methods: {
-        getPersons () {
-            this.persons = [
-                {
-                    Id: 1,
-                    Nombre: "Saúl Antonio",
-                    Edad: 30,
-                    FechaNacimiento: "1992-30-01"
-                },
-                {
-                    Id: 2,
-                    Nombre: "Brenda",
-                    Edad: 26,
-                    FechaNacimiento: "1996-02-23"
-                }
-            ]
+        async getPersons () {
+            let res = await axios.get(`https://localhost:7078/api/persons`)
+            this.persons = res.data
         },
         setCurrentId(id) {
             this.currentId = id
         },
         createPerson () {
-            this.person_id = null
+            this.personId = null
             this.showPersonModal = true
             this.title = "Crear Nueva Persona"
         },
         updatePerson () {
-            this.person_id = this.currentId
+            if (this.checkSelected()) return
+
+            this.personId = this.currentId
             this.showPersonModal = true
             this.title = "Crear Nueva Persona"            
+        },
+        async deletePerson () {
+            if (this.checkSelected()) return
+            try {
+                await axios.delete(`https://localhost:7078/api/persons/${this.currentId}`)
+                alert("Proceso Exitoso")
+            } catch (error) {
+                console.log(error.response)
+            }
+            this.getPersons()
+        },
+        checkSelected () {
+            if (![null, undefined].includes(this.currentId)) return false
+
+            alert("Nada Seleccionado")
+            return true
         }
     },
     mounted () {
