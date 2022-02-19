@@ -12,27 +12,29 @@
                         <div class="modal-body">
                             <slot name="body">
                                 <div class="col-12">
-                                    <span>Nombre:</span>
-                                    <input v-model="person.Nombre" type="text" class="form-control">
+                                    <label for="componentName" class="form-label">Nombre</label>
+                                    <input v-model="person.nombre" type="text" class="form-control" id="componentName">
                                 </div>
                                 <div class="col-12">
-                                    <span>Edad:</span>
-                                    <input v-model="person.Edad" type="number" class="form-control">
+                                    <label for="componentEdad" class="form-label">Edad</label>
+                                    <input v-model="person.edad" type="number" class="form-control" id="componentEdad">
                                 </div>
                                 <div class="col-12">
-                                    <span>Fecha de Nacimiento:</span>
-                                    <input v-model="person.FechaNacimiento" type="date" class="form-control">
+                                    <label for="componentFNacimiento" class="form-label">Fecha de Nacimiento</label>
+                                    <input v-model="person.fechaNacimiento" type="date" class="form-control" id="componentFNacimiento">
                                 </div>
                             </slot>
                         </div>
 
                         <div class="modal-footer">
                             <slot name="footer">
-                                <button class="btn-primary btn-sm modal-btn-footer" @click="close">
+                                <button class="btn-primary btn-sm modal-btn-footer"
+                                    @click="savePerson" :disabled="saving">
                                     <i class="fa-solid fa-floppy-disk"></i>
                                     Guardar
                                 </button>
-                                <button class="btn-danger btn-sm modal-btn-footer" @click="close">
+                                <button class="btn-danger btn-sm modal-btn-footer"
+                                    @click="close" :disabled="saving">
                                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     Salir
                                 </button>
@@ -54,14 +56,16 @@ export default {
     props: {
         show: Boolean,
         title: String,
-        person_id: Number
+        personId: Number
     },
     data() {
         return {
+            saving: false,
             person: {
-                Nombre: null,
-                Edad: null,
-                FechaNacimiento: null
+                id: null,
+                nombre: null,
+                edad: null,
+                fechaNacimiento: null
             }
         }
     },
@@ -70,23 +74,52 @@ export default {
             this.$emit(`close`)
         },
         getDefault () {
-            this.person.Nombre = null
-            this.person.Edad = null
-            this.person.FechaNacimiento = null
+            this.person.id = null
+            this.person.nombre = null
+            this.person.edad = null
+            this.person.fechaNacimiento = null
         },
         async getPerson () {
-            let res = await axios.get(`https://localhost:7078/api/persons/${this.person_id}`)
-            console.log(res.data)
+            let res = await axios.get(`https://localhost:7078/api/persons/${this.personId}`)
+            this.person = res.data
+            var m = new Date(new Date(res.data.fechaNacimiento));
+            let month = (m.getUTCMonth()+1) < 10 ? `0${(m.getUTCMonth()+1)}` : (m.getUTCMonth()+1)
+            let day = m.getUTCDate() < 10 ? `0${m.getUTCDate()}` : m.getUTCDate()
+            this.person.fechaNacimiento = m.getUTCFullYear() + "-" + month + "-" + day
         },
-        savePerson () {
-            console.log("Holi<<<")
+        async savePerson () {       
+            if (this.saving) return
+            
+            let url = {}
+            if (this.personId === null) {
+                url = {
+                    method: 'POST',
+                    url: `https://localhost:7078/api/persons/`,
+                    data: this.person
+                }
+            } else {
+                url = {
+                    method: 'PUT',
+                    url: `https://localhost:7078/api/persons/${this.personId}/`,
+                    data: this.person
+                }
+            }
+            try {
+                await axios(url)
+                alert("Proceso Exitoso")
+                this.$emit(`getPersons`)
+                this.close()
+            } catch (error) {
+                console.log(error.response)
+            } finally {
+                this.saving = false
+            }
         }
     },
     watch: {
         show () {
             if (!this.show) return
-
-            if (this.person_id === null) this.getDefault()
+            if ([null, undefined].includes(this.personId)) this.getDefault()
             else this.getPerson()
         }
     }

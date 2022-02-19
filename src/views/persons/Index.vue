@@ -67,7 +67,8 @@
             :show="showPersonModal"
             :title="title"
             :personId="personId"
-            @close="showPersonModal = false" />
+            @close="showPersonModal = false"
+            @getPersons="getPersons" />
     </div>
 </template>
 <script>
