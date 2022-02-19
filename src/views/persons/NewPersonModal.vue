@@ -52,76 +52,76 @@
 import axios from 'axios'
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 export default {
-    name: `NewPersonModal`,
-    props: {
-        show: Boolean,
-        title: String,
-        personId: Number
-    },
-    data() {
-        return {
-            saving: false,
-            person: {
-                id: null,
-                nombre: null,
-                edad: null,
-                fechaNacimiento: null
-            }
-        }
-    },
-    methods: {
-        close () {
-            this.$emit(`close`)
-        },
-        getDefault () {
-            this.person.id = null
-            this.person.nombre = null
-            this.person.edad = null
-            this.person.fechaNacimiento = null
-        },
-        async getPerson () {
-            let res = await axios.get(`https://localhost:7078/api/persons/${this.personId}`)
-            this.person = res.data
-            var m = new Date(new Date(res.data.fechaNacimiento));
-            let month = (m.getUTCMonth()+1) < 10 ? `0${(m.getUTCMonth()+1)}` : (m.getUTCMonth()+1)
-            let day = m.getUTCDate() < 10 ? `0${m.getUTCDate()}` : m.getUTCDate()
-            this.person.fechaNacimiento = m.getUTCFullYear() + "-" + month + "-" + day
-        },
-        async savePerson () {       
-            if (this.saving) return
-            
-            let url = {}
-            if (this.personId === null) {
-                url = {
-                    method: 'POST',
-                    url: `https://localhost:7078/api/persons/`,
-                    data: this.person
-                }
-            } else {
-                url = {
-                    method: 'PUT',
-                    url: `https://localhost:7078/api/persons/${this.personId}/`,
-                    data: this.person
-                }
-            }
-            try {
-                await axios(url)
-                alert("Proceso Exitoso")
-                this.$emit(`getPersons`)
-                this.close()
-            } catch (error) {
-                console.log(error.response)
-            } finally {
-                this.saving = false
-            }
-        }
-    },
-    watch: {
-        show () {
-            if (!this.show) return
-            if ([null, undefined].includes(this.personId)) this.getDefault()
-            else this.getPerson()
+name: `NewPersonModal`,
+props: {
+    show: Boolean,
+    title: String,
+    personId: Number
+},
+data() {
+    return {
+        saving: false,
+        person: {
+            id: null,
+            nombre: null,
+            edad: null,
+            fechaNacimiento: null
         }
     }
+},
+methods: {
+    close () {
+        this.$emit(`close`)
+    },
+    getDefault () {
+        this.person.id = null
+        this.person.nombre = null
+        this.person.edad = null
+        this.person.fechaNacimiento = null
+    },
+    async getPerson () {
+        let res = await axios.get(`https://localhost:7078/api/persons/${this.personId}`)
+        this.person = res.data
+        var m = new Date(new Date(res.data.fechaNacimiento));
+        let month = (m.getUTCMonth()+1) < 10 ? `0${(m.getUTCMonth()+1)}` : (m.getUTCMonth()+1)
+        let day = m.getUTCDate() < 10 ? `0${m.getUTCDate()}` : m.getUTCDate()
+        this.person.fechaNacimiento = m.getUTCFullYear() + "-" + month + "-" + day
+    },
+    async savePerson () {       
+        if (this.saving) return
+        
+        let url = {}
+        if (this.personId === null) {
+            url = {
+                method: 'POST',
+                url: `https://localhost:7078/api/persons/`,
+                data: this.person
+            }
+        } else {
+            url = {
+                method: 'PUT',
+                url: `https://localhost:7078/api/persons/${this.personId}/`,
+                data: this.person
+            }
+        }
+        try {
+            await axios(url)
+            alert("Proceso Exitoso")
+            this.$emit(`getPersons`)
+            this.close()
+        } catch (error) {
+            console.log(error.response)
+        } finally {
+            this.saving = false
+        }
+    }
+},
+watch: {
+    show () {
+        if (!this.show) return
+        if ([null, undefined].includes(this.personId)) this.getDefault()
+        else this.getPerson()
+    }
+}
 }
 </script>

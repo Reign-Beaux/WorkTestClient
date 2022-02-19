@@ -1,5 +1,5 @@
 <template>
-    <div class="body-background" id="persons">
+    <div id="Persons" class="body-background">
         <h1 class="display-4 text-center">Personas</h1>
         <hr>
         <div class="row">
@@ -76,67 +76,67 @@ import axios from 'axios'
 import NewPersonModal from './NewPersonModal.vue'
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 export default {
-    name: 'indexPerson',
-    data()
-    {
-        return {
-            personId: null,
-            showPersonModal: false,
-            title: "",
-            persons: [],
-            currentId: null,
-            filters: {
-                Nombre_cont: ""
-            },
-            headers: [
-              "Nombre",
-              "Edad",
-              "Fecha de Nacimiento"
-            ]
-        }
-    },
-    components: {
-        NewPersonModal
-    },
-    methods: {
-        async getPersons () {
-            let res = await axios.get(`https://localhost:7078/api/persons`)
-            this.persons = res.data
+name: 'PersonsCRUD',
+data()
+{
+    return {
+        personId: null,
+        showPersonModal: false,
+        title: "",
+        persons: [],
+        currentId: null,
+        filters: {
+            Nombre_cont: ""
         },
-        setCurrentId(id) {
-            this.currentId = id
-        },
-        createPerson () {
-            this.personId = null
-            this.showPersonModal = true
-            this.title = "Crear Nueva Persona"
-        },
-        updatePerson () {
-            if (this.checkSelected()) return
-
-            this.personId = this.currentId
-            this.showPersonModal = true
-            this.title = "Crear Nueva Persona"            
-        },
-        async deletePerson () {
-            if (this.checkSelected()) return
-            try {
-                await axios.delete(`https://localhost:7078/api/persons/${this.currentId}`)
-                alert("Proceso Exitoso")
-            } catch (error) {
-                console.log(error.response)
-            }
-            this.getPersons()
-        },
-        checkSelected () {
-            if (![null, undefined].includes(this.currentId)) return false
-
-            alert("Nada Seleccionado")
-            return true
-        }
-    },
-    mounted () {
-        this.getPersons()
+        headers: [
+            "Nombre",
+            "Edad",
+            "Fecha de Nacimiento"
+        ]
     }
+},
+components: {
+    NewPersonModal
+},
+methods: {
+    async getPersons () {
+        let res = await axios.get(`https://localhost:7078/api/persons`)
+        this.persons = res.data
+    },
+    setCurrentId(id) {
+        this.currentId = id
+    },
+    createPerson () {
+        this.personId = null
+        this.showPersonModal = true
+        this.title = "Crear Nueva Persona"
+    },
+    updatePerson () {
+        if (this.checkSelected()) return
+
+        this.personId = this.currentId
+        this.showPersonModal = true
+        this.title = "Crear Nueva Persona"            
+    },
+    async deletePerson () {
+        if (this.checkSelected()) return
+        try {
+            await axios.delete(`https://localhost:7078/api/persons/${this.currentId}`)
+            alert("Proceso Exitoso")
+        } catch (error) {
+            console.log(error.response)
+        }
+        this.getPersons()
+    },
+    checkSelected () {
+        if (![null, undefined].includes(this.currentId)) return false
+
+        alert("Nada Seleccionado")
+        return true
+    }
+},
+mounted () {
+    this.getPersons()
+}
 }
 </script>
