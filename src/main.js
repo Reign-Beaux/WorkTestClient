@@ -1,7 +1,7 @@
 import * as Vue from 'vue'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import Persons from './components/persons/Index.vue'
+import Persons from './views/persons/Index.vue'
 
 const routes = [
     { path: '/persons', component: Persons, name: 'persons' }
