@@ -1,5 +1,5 @@
 <template>
-    <div class="body-background">
+    <div class="body-background" id="persons">
         <h1 class="display-4 text-center">Personas</h1>
         <hr>
         <div class="row">

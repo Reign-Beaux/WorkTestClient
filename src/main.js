@@ -1,9 +1,11 @@
 import * as Vue from 'vue'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import Persons from './views/persons/Index.vue'
+import Menu from './views/Menu/Menu.vue'
+import Persons from './views/persons/Persons.vue'
 
 const routes = [
+    { path: '/', component: Menu, name: 'menu' },
     { path: '/persons', component: Persons, name: 'persons' }
 ]
 const router = createRouter({
