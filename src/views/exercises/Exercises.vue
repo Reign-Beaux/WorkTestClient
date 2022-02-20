@@ -49,7 +49,7 @@
                                 <button class="btn-primary btn-sm" style="margin-top: 35px"
                                         @click="runPotencia">
                                     <i class="fa-solid fa-calculator"></i>
-                                    Calcular Factorial
+                                    Calcular Potencia
                                 </button>
                             </div>
                             <div class="col-sm">
@@ -88,38 +88,13 @@ methods: {
     back () {
         window.location.href = `/`
     },
-    runFactorial () {
-        this.factorial.result = this.recursiveFactorial(this.factorial.base)
-        // let res = await axios.get(`https://localhost:7078/api/persons/factorial`, { baseFactorial: factorial.base })
-        // console.log(res.data)
+    async runFactorial () {
+        let res = await axios.get(`https://localhost:7078/api/persons/factorial?baseFactorial=${this.factorial.base}`)
+        this.factorial.result = res.data.result
     },
-    recursiveFactorial (n) {
-        if (n == 0)
-            n = 1
-        else
-            n *= this.recursiveFactorial(n - 1)
-
-        return n
-    },
-    runPotencia () {
-        this.potencia.result = this.recursivePotencia(this.potencia.base, this.potencia.potencia)        
-    },
-    recursivePotencia (b, p) {
-        let result
-
-        switch (p) {
-            case 0:
-                result = 1
-                break
-            case 1:
-                result = b
-                break
-            default:
-                result = b * this.recursivePotencia(b, p - 1)
-                break;
-        }
-        
-        return result
+    async runPotencia () {
+        let res = await axios.get(`https://localhost:7078/api/persons/potencia?x=${this.potencia.base}&y=${this.potencia.potencia}`)
+        this.potencia.result = res.data.result
     }
 }
 }
