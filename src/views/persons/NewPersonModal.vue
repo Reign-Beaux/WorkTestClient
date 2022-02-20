@@ -80,12 +80,18 @@ methods: {
         this.person.fechaNacimiento = null
     },
     async getPerson () {
-        let res = await axios.get(`https://localhost:7078/api/persons/${this.personId}`)
-        this.person = res.data
-        var m = new Date(new Date(res.data.fechaNacimiento));
-        let month = (m.getUTCMonth()+1) < 10 ? `0${(m.getUTCMonth()+1)}` : (m.getUTCMonth()+1)
-        let day = m.getUTCDate() < 10 ? `0${m.getUTCDate()}` : m.getUTCDate()
-        this.person.fechaNacimiento = m.getUTCFullYear() + "-" + month + "-" + day
+        try {
+            let res = await axios.get(`https://localhost:7078/api/persons/${this.personId}`)
+            this.person = res.data
+            var m = new Date(new Date(res.data.fechaNacimiento));
+            let month = (m.getUTCMonth()+1) < 10 ? `0${(m.getUTCMonth()+1)}` : (m.getUTCMonth()+1)
+            let day = m.getUTCDate() < 10 ? `0${m.getUTCDate()}` : m.getUTCDate()
+            this.person.fechaNacimiento = m.getUTCFullYear() + "-" + month + "-" + day
+        } catch (err) {
+            alert(err.response.data.title)
+            this.$emit(`getPersons`)
+            this.close()
+        }
     },
     async savePerson () {       
         if (this.saving) return
