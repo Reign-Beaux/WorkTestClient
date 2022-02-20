@@ -6,22 +6,31 @@
             <div class="col-lg-8 offset-lg-2">
                 <div class="card mt-4">
                     <div class="card-body">
-                        <div class="d-flex justify-content-end row p-1">
-                            <button class="btn-primary btn-sm btn-index"
-                                @click="createPerson">
-                                <i class="fa-solid fa-plus"></i>
-                                Crear
-                            </button>
-                            <button class="btn-warning btn-sm btn-index"
-                                @click="updatePerson">
-                                <i class="fa-solid fa-pencil"></i>
-                                Editar
-                            </button>
-                            <button class="btn-danger btn-sm btn-index"
-                                @click="deletePerson">
-                                <i class="fa-solid fa-trash-can"></i>
-                                Eliminar
-                            </button>
+                        <div class="row p-1">
+                            <div class="col-3">
+                                <button class="btn-success btn-sm btn-index"
+                                        @click="back">
+                                    <i class="fa-solid fa-left-long"></i>
+                                    Atras
+                                </button>
+                            </div>
+                            <div class="col-9 d-flex justify-content-end">
+                                <button class="btn-primary btn-sm btn-index"
+                                    @click="createPerson">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Crear
+                                </button>
+                                <button class="btn-warning btn-sm btn-index"
+                                    @click="updatePerson">
+                                    <i class="fa-solid fa-pencil"></i>
+                                    Editar
+                                </button>
+                                <button class="btn-danger btn-sm btn-index"
+                                    @click="deletePerson">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    Eliminar
+                                </button>
+                            </div>
                         </div>
                         <div class="row g-2 p-1">
                             <div class="col-3">
@@ -99,6 +108,9 @@ components: {
     NewPersonModal
 },
 methods: {
+    back () {
+        window.location.href = `/`
+    },
     async getPersons () {
         let res = await axios.get(`https://localhost:7078/api/persons`)
         this.persons = res.data
