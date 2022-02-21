@@ -32,7 +32,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-        
 
                             </slot>
                         </div>
@@ -72,6 +71,7 @@ props: {
 data() {
     return {
         saving: false,
+        currentHistoricId: null,
         headers: [
             "Fecha Cambio",
             "Nombre",
@@ -87,10 +87,24 @@ methods: {
     },
     async getHistoric () {
         let res = await axios.get(`https://localhost:7078/api/historic_persons/${this.personId}`)
-        console.log(res.data)
         this.historic = res.data
     },
+    setCurrentId(id) {
+        this.currentHistoricId = id
+    },
     async restorePerson () {
+        if (this.saving) return
+        
+        try {
+            await axios.put(`https://localhost:7078/api/historic_persons/${this.currentHistoricId}`, {})
+            alert("Proceso Exitoso")
+            this.$emit(`getPersons`)
+            this.close()
+        } catch (error) {
+            console.log(error.response)
+        } finally {
+            this.saving = false
+        }
     },
     formatDate (value) {
         return value.split('T')[0]
