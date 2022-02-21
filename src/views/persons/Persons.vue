@@ -112,7 +112,9 @@ methods: {
         window.location.href = `/`
     },
     async getPersons () {
-        let res = await axios.get(`https://localhost:7078/api/persons`)
+        let res
+        if (this.filters.Nombre_cont !== "") res = await axios.get(`https://localhost:7078/api/persons/filtroNombre?Nombre=${this.filters.Nombre_cont}`)
+        else res = await axios.get(`https://localhost:7078/api/persons`)
         this.persons = res.data
     },
     setCurrentId(id) {
