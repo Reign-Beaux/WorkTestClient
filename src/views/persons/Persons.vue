@@ -30,6 +30,11 @@
                                     <i class="fa-solid fa-trash-can"></i>
                                     Eliminar
                                 </button>
+                                <button class="btn-info btn-sm btn-index"
+                                    @click="historicPerson">
+                                    <i class="fa-solid fa-table-list"></i>
+                                    Histórico
+                                </button>
                             </div>
                         </div>
                         <div class="row g-2 p-1">
@@ -63,7 +68,7 @@
                                         @click="setCurrentId(person.id)">
                                         <td>{{person.nombre}}</td>
                                         <td>{{person.edad}}</td>
-                                        <td>{{person.fechaNacimiento}}</td>
+                                        <td>{{formatDate(person.fechaNacimiento)}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -78,11 +83,18 @@
             :personId="personId"
             @close="showPersonModal = false"
             @getPersons="getPersons" />
+        <HistoricPersonModal
+            :show="showHistoricModal"
+            :title="title"
+            :personId="personId"
+            @close="showHistoricModal = false"
+            @getPersons="getPersons" />
     </div>
 </template>
 <script>
 import axios from 'axios'
 import NewPersonModal from './NewPersonModal.vue'
+import HistoricPersonModal from './HistoricPersonModal.vue'
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
 export default {
 name: 'PersonsCRUD',
@@ -91,6 +103,7 @@ data()
     return {
         personId: null,
         showPersonModal: false,
+        showHistoricModal: false,
         title: "",
         persons: [],
         currentId: null,
@@ -105,7 +118,8 @@ data()
     }
 },
 components: {
-    NewPersonModal
+    NewPersonModal,
+    HistoricPersonModal
 },
 methods: {
     back () {
@@ -142,11 +156,21 @@ methods: {
         }
         this.getPersons()
     },
+    historicPerson () {
+        if (this.checkSelected()) return
+
+        this.personId = this.currentId
+        this.showHistoricModal = true
+        this.title = "Histórico de Cambios"
+    },
     checkSelected () {
         if (![null, undefined].includes(this.currentId)) return false
 
         alert("Nada Seleccionado")
         return true
+    },
+    formatDate (value) {
+        return value.split('T')[0]
     }
 },
 mounted () {
