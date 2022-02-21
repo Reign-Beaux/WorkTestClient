@@ -62,7 +62,6 @@ data() {
     return {
         saving: false,
         person: {
-            id: null,
             nombre: null,
             edad: null,
             fechaNacimiento: null
@@ -74,7 +73,6 @@ methods: {
         this.$emit(`close`)
     },
     getDefault () {
-        this.person.id = null
         this.person.nombre = null
         this.person.edad = null
         this.person.fechaNacimiento = null
@@ -106,11 +104,13 @@ methods: {
         } else {
             url = {
                 method: 'PUT',
-                url: `https://localhost:7078/api/persons/${this.personId}/`,
+                url: `https://localhost:7078/api/persons/${this.personId}`,
                 data: this.person
             }
         }
+
         try {
+            console.log(url)
             await axios(url)
             alert("Proceso Exitoso")
             this.$emit(`getPersons`)
